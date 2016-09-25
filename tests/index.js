@@ -99,17 +99,17 @@ describe('CSSTransitionGroup', () => {
 		list.handleAdd(Date.now());
 
 		setTimeout( () => {
-			expect($('.item')).to.have.length(4);
+			expect($('.item')).to.have.length(5);
 
-			expect($('.item')[3].className).to.contain('example-enter');
-			expect($('.item')[3].className).to.contain('example-enter-active');
+			expect($('.item')[4].className).to.contain('example-enter');
+			expect($('.item')[4].className).to.contain('example-enter-active');
 		}, 500);
 
 		setTimeout( () => {
-			expect($('.item')).to.have.length(4);
+			expect($('.item')).to.have.length(5);
 
-			expect($('.item')[3].className).not.to.contain('example-enter');
-			expect($('.item')[3].className).not.to.contain('example-enter-active');
+			expect($('.item')[4].className).not.to.contain('example-enter');
+			expect($('.item')[4].className).not.to.contain('example-enter-active');
 
 			done();
 		}, 1400);
