@@ -10,7 +10,7 @@ const preactFile = process.env.PREACT_FILE
 	? path.resolve(__dirname, '..', process.env.PREACT_FILE)
 	: null;
 const preactVersion = process.env.PREACT_VERSION
-	? path.resolve(__dirname, 'tests', 'preact-versions', process.env.PREACT_VERSION + '.js')
+	? path.resolve(__dirname, 'preact-versions', process.env.PREACT_VERSION + '.js')
 	: null;
 
 module.exports = function(config) {
