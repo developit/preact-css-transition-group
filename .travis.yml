@@ -1,7 +1,10 @@
 language: node_js
 node_js:
   - 6
+install:
+  - npm install
+  - '[ -z "$PREACT_VERSION" ] || npm run peer:preact -- $PREACT_VERSION'
 env:
   -
-  - PREACT_VERSION=./tests/preact-versions/5.7.0.js
-  - PREACT_VERSION=./tests/preact-versions/6.0.2.js
+  - PREACT_VERSION=5.7.0
+  - PREACT_VERSION=6.0.2

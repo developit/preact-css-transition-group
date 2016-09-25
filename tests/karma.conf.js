@@ -1,6 +1,18 @@
 /* eslint-env node */
 const path = require('path');
 
+// to run with specific preact file:
+//   $ PREACT_FILE=/path/to/preact.js npm test
+// to test with specific preact version (loaded from npm):
+//   $ npm run peer:preact -- 5.7.0
+//   $ PREACT_VERSION=5.7.0 npm test
+const preactFile = process.env.PREACT_FILE
+	? path.resolve(__dirname, '..', process.env.PREACT_FILE)
+	: null;
+const preactVersion = process.env.PREACT_VERSION
+	? path.resolve(__dirname, 'tests', 'preact-versions', process.env.PREACT_VERSION + '.js')
+	: null;
+
 module.exports = function(config) {
 	config.set({
 		basePath: '..',
@@ -59,9 +71,7 @@ module.exports = function(config) {
 				],
 				alias: {
 					src: path.resolve(__dirname, '..', 'src'),
-					preact: process.env.PREACT_VERSION
-						? path.resolve(__dirname, '..', process.env.PREACT_VERSION)
-						: 'preact'
+					preact: preactFile || preactVersion || 'preact'
 				}
 			}
 		},
