@@ -1,4 +1,5 @@
-var path = require('path');
+/* eslint-env node */
+const path = require('path');
 
 module.exports = function(config) {
 	config.set({
@@ -10,6 +11,10 @@ module.exports = function(config) {
 
 		files: [
 			'tests/**/*.js'
+		],
+
+		exclude: [
+			'tests/preact-versions/**/*.js'
 		],
 
 		preprocessors: {
@@ -53,7 +58,10 @@ module.exports = function(config) {
 					'node_modules'
 				],
 				alias: {
-					src: path.resolve(__dirname, '..', 'src')
+					src: path.resolve(__dirname, '..', 'src'),
+					preact: process.env.PREACT_VERSION
+						? path.resolve(__dirname, '..', process.env.PREACT_VERSION)
+						: 'preact'
 				}
 			}
 		},

@@ -12,10 +12,11 @@
     "minify": "uglifyjs $npm_package_main -cm -o $npm_package_minified_main -p relative --in-source-map ${npm_package_main}.map --source-map ${npm_package_minified_main}.map",
     "size": "echo \"gzip size: $(gzip-size $npm_package_minified_main | pretty-bytes)\"",
     "test": "npm-run-all lint test:karma",
-    "lint": "eslint {src,test}",
+    "lint": "eslint {src,tests}",
     "test:karma": "karma start tests/karma.conf.js --single-run",
     "prepublish": "npm-run-all build test",
-    "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "peer:preact": "sh -c 'curl https://registry.npmjs.org/preact/-/preact-$0.tgz | tar xz -O package/dist/preact.min.js > tests/preact-versions/$0.js'"
   },
   "keywords": [
     "preact",
@@ -66,6 +67,7 @@
     "mocha": "^2.4.5",
     "npm-run-all": "^2.3.0",
     "phantomjs-prebuilt": "^2.1.5",
+    "preact": "^6.0.2",
     "pretty-bytes-cli": "^1.0.0",
     "rollup": "^0.34.1",
     "rollup-plugin-babel": "^2.4.0",
@@ -77,7 +79,7 @@
     "uglify-js": "^2.6.2",
     "webpack": "^1.12.14"
   },
-  "dependencies": {
-    "preact": "^5.6.0"
+  "peerDependencies": {
+    "preact": "^5.7.0 || ^6.0.2"
   }
 }

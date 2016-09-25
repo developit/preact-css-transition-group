@@ -1,3 +1,7 @@
 language: node_js
 node_js:
   - 6
+env:
+  -
+  - PREACT_VERSION=./tests/preact-versions/5.7.0.js
+  - PREACT_VERSION=./tests/preact-versions/6.0.2.js
