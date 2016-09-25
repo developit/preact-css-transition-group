@@ -16,7 +16,7 @@
     "test:karma": "karma start tests/karma.conf.js --single-run",
     "prepublish": "npm-run-all build test",
     "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "peer:preact": "sh -c 'curl https://registry.npmjs.org/preact/-/preact-$0.tgz | tar xz -O package/dist/preact.min.js > tests/preact-versions/$0.js'"
+    "peer:preact": "mkdir -p tests/preact-versions && sh -c 'curl https://registry.npmjs.org/preact/-/preact-$0.tgz | tar xz -O package/dist/preact.min.js > tests/preact-versions/$0.js'"
   },
   "keywords": [
     "preact",
