@@ -1,3 +1,4 @@
 *.md
 *.conf.js
 server.js
+tests/preact-versions/*.js

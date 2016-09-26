@@ -17,16 +17,24 @@ const RE_CLASS = /[\n\t\r]+/g;
 let norm = elemClass => (SPACE + elemClass + SPACE).replace(RE_CLASS, SPACE);
 
 export function addClass(elem, className) {
-	elem.className += ' ' + className;
+	if (elem.classList) {
+		elem.classList.add(className);
+	} else {
+		elem.className += ' ' + className;
+	}
 }
 
 export function removeClass(elem, needle) {
-	let elemClass = elem.className.trim();
-	let className = norm(elemClass);
 	needle = needle.trim();
-	needle = SPACE + needle + SPACE;
-	while (className.indexOf(needle) >= 0) {
-		className = className.replace(needle, SPACE);
+	if (elem.classList) {
+		elem.classList.remove(needle);
+	} else {
+		let elemClass = elem.className.trim();
+		let className = norm(elemClass);
+		needle = SPACE + needle + SPACE;
+		while (className.indexOf(needle) >= 0) {
+			className = className.replace(needle, SPACE);
+		}
+		elem.className = className.trim();
 	}
-	elem.className = className.trim();
 }

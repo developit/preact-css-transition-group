@@ -51,6 +51,38 @@ class TodoList extends Component {
 	}
 }
 
+class SVGList extends Component {
+	state = {
+		items: ['hello', 'world', 'click', 'me']
+	};
+
+	handleAdd(item) {
+		let { items } = this.state;
+		items = items.concat(item);
+		this.setState({ items });
+	}
+
+	handleRemove(i) {
+		let { items } = this.state;
+		items.splice(i, 1);
+		this.setState({ items });
+	}
+
+	render(_, { items }) {
+		return (
+			<svg>
+				<CSSTransitionGroup transitionName="example" component="g">
+					{ items.map( (item, i) => (
+						<text key={item} className="item">
+							{item}
+						</text>
+					)) }
+				</CSSTransitionGroup>
+			</svg>
+		);
+	}
+}
+
 
 const Nothing = () => null;
 
@@ -99,17 +131,74 @@ describe('CSSTransitionGroup', () => {
 		list.handleAdd(Date.now());
 
 		setTimeout( () => {
-			expect($('.item')).to.have.length(4);
+			expect($('.item')).to.have.length(5);
 
-			expect($('.item')[3].className).to.contain('example-enter');
-			expect($('.item')[3].className).to.contain('example-enter-active');
+			expect($('.item')[4].className).to.contain('example-enter');
+			expect($('.item')[4].className).to.contain('example-enter-active');
 		}, 500);
+
+		setTimeout( () => {
+			expect($('.item')).to.have.length(5);
+
+			expect($('.item')[4].className).not.to.contain('example-enter');
+			expect($('.item')[4].className).not.to.contain('example-enter-active');
+
+			done();
+		}, 1400);
+	});
+});
+
+describe('CSSTransitionGroup: SVG', () => {
+	let container = document.createElement('div'),
+		list, root;
+	document.body.appendChild(container);
+
+	let $ = s => [].slice.call(container.querySelectorAll(s));
+
+	beforeEach( () => {
+		root = render(<div><Nothing /></div>, container, root);
+		root = render(<div><SVGList ref={c => list=c} /></div>, container, root);
+	});
+
+	afterEach( () => {
+		list = null;
+	});
+
+	it('create works', () => {
+		expect($('.item')).to.have.length(4);
+	});
+
+	it('transitionLeave works', done => {
+		list.handleRemove(0);
 
 		setTimeout( () => {
 			expect($('.item')).to.have.length(4);
 
-			expect($('.item')[3].className).not.to.contain('example-enter');
-			expect($('.item')[3].className).not.to.contain('example-enter-active');
+			expect($('.item')[0].classList.contains('example-leave'));
+			expect($('.item')[0].classList.contains('example-leave-active'));
+		}, 100);
+
+		setTimeout( () => {
+			expect($('.item')).to.have.length(3);
+			done();
+		}, 1400);
+	});
+
+	it('transitionEnter works', done => {
+		list.handleAdd(Date.now());
+
+		setTimeout( () => {
+			expect($('.item')).to.have.length(5);
+
+			expect($('.item')[4].classList.contains('example-enter'));
+			expect($('.item')[4].classList.contains('example-enter-active'));
+		}, 500);
+
+		setTimeout( () => {
+			expect($('.item')).to.have.length(5);
+
+			expect(!$('.item')[4].classList.contains('example-enter'));
+			expect(!$('.item')[4].classList.contains('example-enter-active'));
 
 			done();
 		}, 1400);
