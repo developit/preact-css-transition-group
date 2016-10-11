@@ -1,7 +1,7 @@
 {
   "name": "preact-css-transition-group",
   "amdName": "PreactCSSTransitionGroup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Apply CSS transitions when adding or removing Preact components/elements.",
   "main": "dist/preact-css-transition-group.js",
   "minified:main": "dist/preact-css-transition-group.min.js",
@@ -80,6 +80,6 @@
     "webpack": "^1.12.14"
   },
   "peerDependencies": {
-    "preact": "^5.7.0 || ^6.0.2"
+    "preact": "*"
   }
 }
