@@ -18,7 +18,7 @@ let norm = elemClass => (SPACE + elemClass + SPACE).replace(RE_CLASS, SPACE);
 
 export function addClass(elem, className) {
 	if (elem.classList) {
-		elem.classList.add(className);
+		elem.classList.add(...className.split(' '));
 	} else {
 		elem.className += ' ' + className;
 	}
@@ -27,7 +27,7 @@ export function addClass(elem, className) {
 export function removeClass(elem, needle) {
 	needle = needle.trim();
 	if (elem.classList) {
-		elem.classList.remove(needle);
+		elem.classList.remove(...needle.split(' '));
 	} else {
 		let elemClass = elem.className.trim();
 		let className = norm(elemClass);
