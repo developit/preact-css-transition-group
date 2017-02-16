@@ -21,8 +21,8 @@ const TICK = 17;
 export class CSSTransitionGroupChild extends Component {
 	transition(animationType, finishCallback) {
 		let node = getComponentBase(this),
-			className = this.props.name + '-' + animationType,
-			activeClassName = className + '-active';
+			className = this.props.name[animationType] || this.props.name + '-' + animationType,
+			activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
 
 		if (this.endListener) {
 			this.endListener();
