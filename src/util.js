@@ -9,3 +9,7 @@ export function getComponentBase(component) {
 export function onlyChild(children) {
 	return children && children[0];
 }
+
+export function filterNullChildren(children) {
+	return children && children.filter(i => i !== null);
+}
