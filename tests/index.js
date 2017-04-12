@@ -83,6 +83,40 @@ class SVGList extends Component {
 	}
 }
 
+class NullChildren extends Component {
+
+	state = {
+		items: [
+			{ displayed: true, item: 'hello'},
+			{ displayed: true, item: 'world'},
+			{ displayed: false, item: 'click'},
+			{ displayed: true, item: 'me'}
+		]
+	};
+
+	toggleDisplay(i) {
+		let { items } = this.state;
+		const item = items[i];
+		item.displayed = !item.displayed;
+		this.setState({ items });
+	}
+
+	render(_, { items }) {
+		return (
+			<div className='root'>
+				<CSSTransitionGroup transitionName="example">
+					{null}
+
+					{ items.map( ({displayed, item}, i) => (
+						displayed ? <Todo key={item} onClick={this.toggleDisplay.bind(this, i)}>
+							{item}
+						</Todo> : null
+					)) }
+				</CSSTransitionGroup>
+			</div>
+		);
+	}
+}
 
 const Nothing = () => null;
 
@@ -199,6 +233,66 @@ describe('CSSTransitionGroup: SVG', () => {
 
 			expect(!$('.item')[4].classList.contains('example-enter'));
 			expect(!$('.item')[4].classList.contains('example-enter-active'));
+
+			done();
+		}, 1400);
+	});
+});
+
+describe('CSSTransitionGroup: NullChildren', () => {
+	let container = document.createElement('div'),
+		list, root;
+	document.body.appendChild(container);
+
+	let $ = s => [].slice.call(container.querySelectorAll(s));
+
+	beforeEach( () => {
+		root = render(<div><Nothing /></div>, container, root);
+		root = render(<div><NullChildren ref={c => list=c} /></div>, container, root);
+	});
+
+	afterEach( () => {
+		list = null;
+	});
+
+	it('create works', () => {
+		expect($('.item')).to.have.length(3);
+	});
+
+	it('transitionLeave works', done => {
+		// this.timeout(5999);
+		list.toggleDisplay(1);
+
+		// make sure -leave class was added
+		setTimeout( () => {
+			expect($('.item')).to.have.length(3);
+
+			expect($('.item')[1].className).to.contain('example-leave');
+			expect($('.item')[1].className).to.contain('example-leave-active');
+		}, 100);
+
+		// then make sure it's gone
+		setTimeout( () => {
+			expect($('.item')).to.have.length(2);
+			done();
+		}, 1400);
+	});
+
+	it('transitionEnter works', done => {
+		// this.timeout(5999);
+		list.toggleDisplay(2);
+
+		setTimeout( () => {
+			expect($('.item')).to.have.length(4);
+			expect($('.item')[2].className).to.contain('example-enter');
+			expect($('.item')[2].className).to.contain('example-enter-active');
+		}, 500);
+
+		setTimeout( () => {
+			expect($('.item')).to.have.length(4);
+
+			expect($('.item')[3].className).not.to.contain('example-enter');
+			expect($('.item')[3].className).not.to.contain('example-enter-active');
 
 			done();
 		}, 1400);
