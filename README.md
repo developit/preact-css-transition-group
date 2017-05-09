@@ -1,5 +1,7 @@
 # preact-css-transition-group
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/developit/preact-css-transition-group.svg)](https://greenkeeper.io/)
+
 A preact fork of [css-transition-group](https://github.com/react-component/css-transition-group), which was originally extracted from the React codebase itself. The overwhelming majority of the code was written by the lovely folks of the React team, so kudos to them!
 
 This module may be of use to you if:
