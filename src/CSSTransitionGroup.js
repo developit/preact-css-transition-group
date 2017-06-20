@@ -181,7 +181,7 @@ export class CSSTransitionGroup extends Component {
 	}
 
 	renderChild = child => {
-		let { transitionName, transitionEnter, transitionLeave } = this.props,
+		let { transitionName, transitionEnter, transitionLeave, transitionEnterTimeout, transitionLeaveTimeout } = this.props,
 			key = getKey(child);
 		return (
 			<CSSTransitionGroupChild
@@ -191,13 +191,15 @@ export class CSSTransitionGroup extends Component {
 				}}
 				name={transitionName}
 				enter={transitionEnter}
-				leave={transitionLeave}>
+				leave={transitionLeave}
+				enterTimeout={transitionEnterTimeout}
+				leaveTimeout={transitionLeaveTimeout}>
 				{child}
 			</CSSTransitionGroupChild>
 		);
 	};
 
-	render({ component:Component, transitionName, transitionEnter, transitionLeave, children:c, ...props }, { children }) {
+	render({ component:Component, transitionName, transitionEnter, transitionLeave, transitionEnterTimeout, transitionLeaveTimeout, children:c, ...props }, { children }) {
 		return (
 			<Component {...props}>
 				{ filterNullChildren(children).map(this.renderChild) }

@@ -19,10 +19,12 @@ import { addEndEventListener, removeEndEventListener } from './TransitionEvents'
 const TICK = 17;
 
 export class CSSTransitionGroupChild extends Component {
-	transition(animationType, finishCallback) {
-		let node = getComponentBase(this),
-			className = this.props.name[animationType] || this.props.name + '-' + animationType,
-			activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
+	transition(animationType, finishCallback, timeout) {
+		let node = getComponentBase(this);
+
+		let className = this.props.name[animationType] || this.props.name + '-' + animationType;
+		let activeClassName = this.props.name[animationType + 'Active'] || className + '-active';
+		let timer = null;
 
 		if (this.endListener) {
 			this.endListener();
@@ -31,9 +33,9 @@ export class CSSTransitionGroupChild extends Component {
 		this.endListener = (e) => {
 			if (e && e.target!==node) return;
 
+			clearTimeout(timer);
 			removeClass(node, className);
 			removeClass(node, activeClassName);
-
 			removeEndEventListener(node, this.endListener);
 			this.endListener = null;
 
@@ -44,7 +46,12 @@ export class CSSTransitionGroupChild extends Component {
 			}
 		};
 
-		addEndEventListener(node, this.endListener);
+		if (timeout) {
+			timer = setTimeout(this.endListener, timeout);
+			this.transitionTimeouts.push(timer);
+		} else {
+			addEndEventListener(node, this.endListener);
+		}
 
 		addClass(node, className);
 
@@ -81,17 +88,21 @@ export class CSSTransitionGroupChild extends Component {
 
 	componentWillMount() {
 		this.classNameQueue = [];
+		this.transitionTimeouts = [];
 	}
 
 	componentWillUnmount() {
 		if (this.timeout) {
 			clearTimeout(this.timeout);
 		}
+		this.transitionTimeouts.forEach((timeout) => {
+			clearTimeout(timeout);
+		});
 	}
 
 	componentWillEnter(done) {
 		if (this.props.enter) {
-			this.transition('enter', done);
+			this.transition('enter', done, this.props.enterTimeout);
 		}
 		else {
 			done();
@@ -100,7 +111,7 @@ export class CSSTransitionGroupChild extends Component {
 
 	componentWillLeave(done) {
 		if (this.props.leave) {
-			this.transition('leave', done);
+			this.transition('leave', done, this.props.leaveTimeout);
 		}
 		else {
 			done();
