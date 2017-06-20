@@ -1,7 +1,7 @@
 {
   "name": "preact-css-transition-group",
   "amdName": "PreactCSSTransitionGroup",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Apply CSS transitions when adding or removing Preact components/elements.",
   "main": "dist/preact-css-transition-group.js",
   "minified:main": "dist/preact-css-transition-group.min.js",
