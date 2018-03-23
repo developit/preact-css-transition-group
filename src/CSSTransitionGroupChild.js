@@ -12,11 +12,9 @@
 
 
 import { h, Component } from 'preact';
-import { getComponentBase, onlyChild } from './util';
+import { getComponentBase, onlyChild, requestAnimationFrame } from './util';
 import { addClass, removeClass } from './CSSCore';
 import { addEndEventListener, removeEndEventListener } from './TransitionEvents';
-
-const TICK = 17;
 
 export class CSSTransitionGroupChild extends Component {
 	transition(animationType, finishCallback, timeout) {
@@ -62,16 +60,15 @@ export class CSSTransitionGroupChild extends Component {
 	queueClass(className) {
 		this.classNameQueue.push(className);
 
-		if (!this.timeout) {
-			this.timeout = setTimeout(this.flushClassNameQueue, TICK);
+		if (!this.rafHandle) {
+			this.rafHandle = requestAnimationFrame(this.flushClassNameQueue);
 		}
 	}
 
 	stop() {
-		if (this.timeout) {
-			clearTimeout(this.timeout);
+		if (this.rafHandle) {
 			this.classNameQueue.length = 0;
-			this.timeout = null;
+			this.rafHandle = null;
 		}
 		if (this.endListener) {
 			this.endListener();
@@ -83,7 +80,7 @@ export class CSSTransitionGroupChild extends Component {
 			addClass(getComponentBase(this), this.classNameQueue.join(' '));
 		}
 		this.classNameQueue.length = 0;
-		this.timeout = null;
+		this.rafHandle = null;
 	};
 
 	componentWillMount() {
@@ -92,9 +89,8 @@ export class CSSTransitionGroupChild extends Component {
 	}
 
 	componentWillUnmount() {
-		if (this.timeout) {
-			clearTimeout(this.timeout);
-		}
+		this.classNameQueue.length = 0;
+		this.rafHandle = null;
 		this.transitionTimeouts.forEach((timeout) => {
 			clearTimeout(timeout);
 		});
