@@ -18,6 +18,11 @@ import { addEndEventListener, removeEndEventListener } from './TransitionEvents'
 
 export class CSSTransitionGroupChild extends Component {
 	transition(animationType, finishCallback, timeout) {
+
+		if (!timeout) {
+			this.raiseTimeoutConsoleError(animationType);
+		}
+
 		let node = getComponentBase(this);
 
 		let className = this.props.name[animationType] || this.props.name + '-' + animationType;
@@ -55,6 +60,11 @@ export class CSSTransitionGroupChild extends Component {
 
 		// Need to do this to actually trigger a transition.
 		this.queueClass(activeClassName);
+	}
+
+	raiseTimeoutConsoleError(type) {
+		const timeoutType = type === 'enter' ?  'transitionEnterTimeout' : 'transitionLeaveTimeout';
+		console.error(`${timeoutType} should be specified`);
 	}
 
 	queueClass(className) {
