@@ -13,3 +13,12 @@ export function onlyChild(children) {
 export function filterNullChildren(children) {
 	return children && children.filter(i => i !== null);
 }
+
+export const requestAnimationFrame = (callback) => {
+	if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+		window.requestAnimationFrame(callback);
+	}
+	else {
+		setTimeout(callback, 17);
+	}
+};

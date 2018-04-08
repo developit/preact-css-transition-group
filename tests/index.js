@@ -3,7 +3,7 @@ import CSSTransitionGroup from 'src';
 import { endEvents } from 'src/TransitionEvents';
 import './style.css';
 
-/* global describe,expect,it */
+/* global describe,expect,it,sinon,assert */
 
 class Todo extends Component {
 	defaultProps = {
@@ -71,7 +71,7 @@ class TodoListWithTimeout extends Component {
 	render(_, { items }) {
 		return (
 			<div>
-				<CSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={200}>
+				<CSSTransitionGroup transitionName="example" transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
 					{ items.map( (item, i) => (
 						<Todo key={item} onClick={this.handleRemove.bind(this, i)}>
 							{item}
@@ -103,7 +103,7 @@ class SVGList extends Component {
 	render(_, { items }) {
 		return (
 			<svg>
-				<CSSTransitionGroup transitionName="example" component="g">
+				<CSSTransitionGroup transitionName="example" transitionEnterTimeout={1000} transitionLeaveTimeout={1000} component="g">
 					{ items.map( (item, i) => (
 						<text key={item} className="item">
 							{item}
@@ -136,7 +136,7 @@ class NullChildren extends Component {
 	render(_, { items }) {
 		return (
 			<div className='root'>
-				<CSSTransitionGroup transitionName="example">
+				<CSSTransitionGroup transitionName="example" transitionEnterTimeout={1000} transitionLeaveTimeout={1000}>
 					{null}
 
 					{ items.map( ({displayed, item}, i) => (
@@ -153,7 +153,7 @@ class NullChildren extends Component {
 const Nothing = () => null;
 
 
-describe('CSSTransitionGroup', () => {
+describe('CSSTransitionGroup without timeout', () => {
 	let container = document.createElement('div'),
 		list, root;
 	document.body.appendChild(container);
@@ -163,58 +163,39 @@ describe('CSSTransitionGroup', () => {
 	beforeEach( () => {
 		root = render(<div><Nothing /></div>, container, root);
 		root = render(<div><TodoList ref={c => list=c} /></div>, container, root);
+		sinon.spy(console, 'error');
 	});
 
 	afterEach( () => {
 		list = null;
+		console.error.restore();
 	});
 
 	it('create works', () => {
 		expect($('.item')).to.have.length(4);
 	});
 
-	it('transitionLeave works', done => {
-		// this.timeout(5999);
+	it('transitionLeave raises console error', done => {
 		list.handleRemove(0);
-
-		// make sure -leave class was added
 		setTimeout( () => {
-			expect($('.item')).to.have.length(4);
-
-			expect($('.item')[0].className).to.contain('example-leave');
-			expect($('.item')[0].className).to.contain('example-leave-active');
-		}, 100);
-
-		// then make sure it's gone
-		setTimeout( () => {
-			expect($('.item')).to.have.length(3);
+			assert(console.error.calledOnce);
+			expect(console.error.getCall(0).args[0]).to.equal('transitionLeaveTimeout should be specified');
 			done();
-		}, 1400);
+		}, 100);
 	});
 
-	it('transitionEnter works', done => {
-		// this.timeout(5999);
+	it('transitionEnter raises console error', done => {
 		list.handleAdd(Date.now());
 
 		setTimeout( () => {
-			expect($('.item')).to.have.length(5);
-
-			expect($('.item')[4].className).to.contain('example-enter');
-			expect($('.item')[4].className).to.contain('example-enter-active');
-		}, 500);
-
-		setTimeout( () => {
-			expect($('.item')).to.have.length(5);
-
-			expect($('.item')[4].className).not.to.contain('example-enter');
-			expect($('.item')[4].className).not.to.contain('example-enter-active');
-
+			assert(console.error.calledOnce);
+			expect(console.error.getCall(0).args[0]).to.equal('transitionEnterTimeout should be specified');
 			done();
-		}, 1400);
+		}, 100);
 	});
 });
 
-describe('CSSTransitionGroup: timeout', () => {
+describe('CSSTransitionGroup with timeout', () => {
 	let container = document.createElement('div'),
 		list, root;
 	document.body.appendChild(container);
@@ -250,7 +231,7 @@ describe('CSSTransitionGroup: timeout', () => {
 		setTimeout( () => {
 			expect($('.item')).to.have.length(3);
 			done();
-		}, 300);
+		}, 1400);
 	});
 
 	it('transitionEnter works with the transitionEnterTimeout', done => {
@@ -262,7 +243,7 @@ describe('CSSTransitionGroup: timeout', () => {
 
 			expect($('.item')[4].className).to.contain('example-enter');
 			expect($('.item')[4].className).to.contain('example-enter-active');
-		}, 300);
+		}, 100);
 
 		setTimeout( () => {
 			expect($('.item')).to.have.length(5);
@@ -271,7 +252,7 @@ describe('CSSTransitionGroup: timeout', () => {
 			expect($('.item')[4].className).not.to.contain('example-enter-active');
 
 			done();
-		}, 600);
+		}, 1400);
 	});
 });
 
@@ -319,7 +300,7 @@ describe('CSSTransitionGroup: SVG', () => {
 
 			expect($('.item')[4].classList.contains('example-enter'));
 			expect($('.item')[4].classList.contains('example-enter-active'));
-		}, 500);
+		}, 100);
 
 		setTimeout( () => {
 			expect($('.item')).to.have.length(5);
@@ -379,7 +360,7 @@ describe('CSSTransitionGroup: NullChildren', () => {
 			expect($('.item')).to.have.length(4);
 			expect($('.item')[2].className).to.contain('example-enter');
 			expect($('.item')[2].className).to.contain('example-enter-active');
-		}, 500);
+		}, 100);
 
 		setTimeout( () => {
 			expect($('.item')).to.have.length(4);
